@@ -6,12 +6,8 @@
   "regions": ["sin1"],
   "env": {
     "NEXT_PUBLIC_APP_URL": {
-      "description": "The public URL of your deployed application"
-    }
-  },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_APP_URL": "@vercel_url"
+      "description": "The public URL of your deployed application",
+      "value": "@vercel_url"
     }
   },
   "headers": [
