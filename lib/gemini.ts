@@ -12,7 +12,7 @@ export interface ParsedSchedule {
 
 export async function parseScheduleMessage(message: string): Promise<ParsedSchedule | ParsedSchedule[] | { error: string }> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
     
     const prompt = `
 You are an AI assistant that parses natural language messages into structured schedule data.
@@ -90,6 +90,15 @@ Status examples:
 Current date: ${new Date().toISOString()}
 Current time: ${new Date().toLocaleTimeString()}
 Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+IMPORTANT: Timezone handling rules:
+- Current timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC+7 for Asia/Jakarta)
+- When parsing times like "jam 8", "jam 9", "jam 12 siang", these are LOCAL times
+- Convert local time to UTC properly for ISO 8601 format
+- Examples for Asia/Jakarta timezone (UTC+7):
+  * "jam 8 pagi" = 08:00 local = 01:00 UTC = "2025-10-17T01:00:00.000Z"
+  * "jam 9 pagi" = 09:00 local = 02:00 UTC = "2025-10-17T02:00:00.000Z"  
+  * "jam 12 siang" = 12:00 local = 05:00 UTC = "2025-10-17T05:00:00.000Z"
+- Always subtract 7 hours from local time to get UTC time
 
 Parse and respond with valid JSON only:
 `
